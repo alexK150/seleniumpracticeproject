@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PositiveTests {
@@ -24,22 +25,35 @@ public class PositiveTests {
         driver.get(url);
         System.out.println("Page is opened");
 
-//        enter username
+        //enter username
         WebElement username = driver.findElement(By.id("username"));
         username.sendKeys("tomsmith");
-//        enter password
+
+        //enter password
         WebElement password = driver.findElement(By.name("password"));
         password.sendKeys("SuperSecretPassword!");
-//        click login button
+
+        //click login button
         WebElement logInButton = driver.findElement(By.tagName("button"));
         logInButton.click();
-//
-//        verifications:
-//        new url
-//        logout button is visible
+
+//verifications:
+        //new url
+        String expectedUrl = "http://the-internet.herokuapp.com/secure";
+        String actualUrl = driver.getCurrentUrl();
+        Assert.assertEquals(actualUrl, expectedUrl, "Urls are different");
+
+         //logout button is visible
         WebElement logOutButton = driver.findElement(By.xpath("//a[@class='button secondary radius']"));
+        Assert.assertTrue(logOutButton.isDisplayed(), "Log out button is not visible");
+
         //success login  message
-        WebElement successMessage = driver.findElement(By.cssSelector("#flash"));
+        WebElement successMessage = driver.findElement(By.xpath("//div[@id='flash']"));
+        String expectedMessage = "You logged into a secure area!";
+        String actualMessage = successMessage.getText();
+        Assert.assertTrue(actualMessage.contains(expectedMessage), "Actual message does not contain expected message." +
+                " \nActual Message: " + actualMessage +
+                "\nExpected Message: " + expectedMessage);
 
         //Close browser
         driver.quit();
